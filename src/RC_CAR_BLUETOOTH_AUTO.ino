@@ -1,6 +1,10 @@
+/*
+ * Hardware Setup Note:
+ * Arduino TX (5V) -> Voltage Divider (R1=1k, R2=2k) -> HC-05 RX (3.3V)
+ * Ensure common GND between Arduino and Bluetooth module.
+ */
 #include <Servo.h>
-
-// --- PIN CONFIGURATIONS ---
+//  PIN CONFIGURATIONS 
 const int IN4 = 3; 
 const int IN3 = 7; 
 const int IN2 = 8; 
@@ -13,7 +17,7 @@ const int Echo = 2;
 const int Trig = 4;
 const int SERVO_PIN = 12; 
 
-// --- SYSTEM OBJECTS & VARIABLES ---
+
 Servo radarServo;
 
 bool automatic = false; // false = manualMode, true = autoMode
@@ -59,7 +63,7 @@ void loop() {
     }
   }
 
-  // --- RUN SEPARATED MODES ---
+ 
   if (automatic) {
     autoMode();
   } else {
@@ -67,9 +71,6 @@ void loop() {
   }
 }
 
-// ========================================================
-// MODE 1: MANUAL BLUETOOTH CONTROL
-// ========================================================
 void manualMode() {
   obstracleDetected = false; 
   
@@ -81,7 +82,7 @@ void manualMode() {
     }
   }
   
-  // Execute movement based on the last command read in loop
+
   switch (command) {
     case 'F': if (!obstracleDetected) { moveForward(); } break;
     case 'B': moveBackward(); break;
@@ -91,9 +92,6 @@ void manualMode() {
   }
 }
 
-// ========================================================
-// MODE 2: AUTONOMOUS SELF-DRIVING
-// ========================================================
 void autoMode() {
   int centerDist = getDistance();
   
@@ -133,7 +131,7 @@ void autoMode() {
     stopCar();
   } 
   else {
-    // Path clear? Keep rolling forward at normal speed
+   
     analogWrite(ENA, SPEED_ECO);
     analogWrite(ENB, SPEED_ECO);
     digitalWrite(IN1, HIGH);
@@ -143,7 +141,7 @@ void autoMode() {
   }
 }
 
-// --- HELPER SENSOR FUNCTION ---
+//  HELPER SENSOR FUNCTION 
 int getDistance() {
   digitalWrite(Trig, LOW);
   delayMicroseconds(2);
@@ -156,7 +154,7 @@ int getDistance() {
   return cm;
 }
 
-// --- MOTION CONTROL FUNCTIONS ---
+// MOTION CONTROL FUNCTIONS
 void moveForward() {
   analogWrite(ENA, currentSpeed);
   analogWrite(ENB, currentSpeed);
